@@ -1,0 +1,85 @@
+The config files are:
+/etc/my.cnf
+/etc/mysql/my.cnf
+/var/lib/mysql/my.cnf
+
+/var/run/mysqld/mysqld.sock
+etc/mysql/mysql.conf.d/mysqld.cnf
+
+mysql -h 127.0.0.1 -P 3306 -u root -p <database>
+telnet 127.0.0.1 3306 
+
+/etc/init.d/mysqld status
+.../etc/init.d/mysqld start
+
+Download and install MySQL server and client
+Step 1: Add the MySQL 5.7 APT Repository
+	wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+	sudo dpkg -i mysql-apt-config_0.8.12-1_all.deb
+	sudo apt update
+	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29
+	sudo apt update
+	sudo apt-cache policy mysql-server
+Step 2: Install MySQL 5.7
+	sudo apt install -f mysql-client=5.7* mysql-community-server=5.7* mysql-server=5.7*
+	
+2 - Secure your MySQL root user account
+	sudo mysql_secure_installation
+
+1 - Download and install MySQL 8.0 APT Repository
+	wget https://dev.mysql.com/get/mysql-apt-config_0.8.12-1_all.deb
+	sudo dpkg -i mysql-apt-config_0.8.15-1_all.deb
+	sudo apt update
+2 - Install MySQL 8.0
+	sudo apt install -f mysql-client=8.0* mysql-community-server=8.0* mysql-server=8.0*	
+3 - Check MySQL version
+	mysql –V
+	mysqladmin -u root -p version
+4 - Create a MySQL user
+	CREATE USER 'username'@'localhost' IDENTIFIED BY 'user_password';
+	
+
+
+dpkg: error processing package mysql-server (--install):  
+dependency problems - leaving unconfigured Errors were encountered while processing:  
+mysql-server
+	sudo apt-get clean
+	sudo apt-get purge mysql*
+	sudo apt-get autoremove
+	sudo apt-get autoclean
+	sudo apt-get update
+	sudo apt-get install -f
+	sudo apt-get install mysql-server-5.7
+	sudo apt-get dist-upgrade
+	
+  method-2
+	sudo apt-get upgrade
+	sudo dpkg --configure -a
+	sudo apt-get remove mysql-server
+	ps -eaf
+
+
+
+This error could also happens if the port (3306)
+	sudo netstat -nltp | grep LISTEN | grep 3306
+	sudo apt purge --auto-remove mysql*
+	sudo rm -r /etc/mysql
+	sudo rm -r /var/lib/mysql*
+	sudo apt install mysql-client-8.0 mysql-server-8.0 --fix-broken -y
+
+	yes | apt-get install mysql-community-server
+
+
+sudo dpkg -i libnet-daemon-perl_0.43-1_all.deb
+sudo dpkg -i libplrpc-perl_0.2020-2_all.deb
+sudo dpkg -i libdbi-perl_1.622-1_amd64.deb
+sudo dpkg -i mysql-common_5.5.32-0ubuntu0.12.04.1_all.deb
+sudo dpkg -i libmysqlclient18_5.5.32-0ubuntu0.12.04.1_amd64.deb
+sudo dpkg -i libdbd-mysql-perl_4.021-1_amd64.deb
+sudo dpkg -i mysql-client-core-5.5_5.5.32-0ubuntu0.12.04.1_amd64.deb
+sudo dpkg -i libterm-readkey-perl_2.30-4build3_amd64.deb
+sudo dpkg -i mysql-client-5.5_5.5.32-0ubuntu0.12.04.1_amd64.deb
+sudo dpkg -i mysql-server-core-5.5_5.5.32-0ubuntu0.12.04.1_amd64.deb
+sudo dpkg -i mysql-server-5.5_5.5.32-0ubuntu0.12.04.1_amd64.deb
+sudo dpkg -i mysql-server_5.5.32-0ubuntu0.12.04.1_all.deb
+sudo dpkg -i libhtml-template-perl_2.9-2_all.deb

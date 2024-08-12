@@ -1,0 +1,19 @@
+---
+- name: Install Java
+  hosts: nagiosql
+  become: yes
+
+  tasks:
+    - name: Check OS distribution and install Java
+      block:
+        - name: Check OS distribution for Ubuntu
+          block:
+            - name: Ubuntu detected - Copying Java package
+              ansible.builtin.copy:
+                src: /home/ubuntu/script-ansible/nagiosql/roles/linux-nagiosql/files/jdk-17_linux-x64_bin.deb
+                dest: /tmp/jdk-17_linux-x64_bin.deb
+              when: ansible_distribution == 'Ubuntu'
+
+            - name: Ubuntu detected - Installing Java from local deb package
+              ansible.builtin.shell: dpkg -i /tmp/jdk-17_linux-x64_bin.deb
+              when: ansible_distribution == 'Ubuntu'

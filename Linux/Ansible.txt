@@ -1,0 +1,183 @@
+https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-ansible-on-ubuntu-22-04
+
+======================================================================================================================
+sudo apt-add-repository ppa:ansible/ansible
+sudo apt update
+apt install ansible
+ansible --version
+
+nano /etc/ansible/hosts
+__________
+		[ansible_clients]
+		ip_address ansible_ssh_pass=js ansible_ssh_user=root
+		
+		[all:vars]
+		ansible_python_interpreter=/usr/bin/python3
+__________		
+
+ansible-inventory --list -y
+ansible all -m ping -u root
+ansible all -a "df -h" -u root
+
+nano test.yml
+__________
+---
+- name: Basic playbook
+  hosts: all
+  tasks:
+    - name: print a message
+      debug:
+        msg: "Hello World"
+__________
+
+ansible-playbook test.yml
+
+ssh-copy-id user_name@IP_ADDRESS
+______________________________________________________________________________________________________________________
+------------------------------------------- Extra Notes Incase Any Problem -------------------------------------------
+
+ansible-playbook  -i hosts sample.yml -u badmin --ask-become-pass
+ansible-playbook nginx.yml --ask-become-pass
+
+ssh-keygen -t rsa 
+ssh-keygen -t rsa -C "10.225.247.166"
+
+----->1.Check the current locale settings:
+locale
+----->2.Generate a UTF-8 locale if it's not already available:
+sudo locale-gen en_US.UTF-8
+----->3.Set the default locale to UTF-8 by editing the /etc/default/locale file:
+sudo nano /etc/default/locale
+----->Add or modify the following lines:
+LANG=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+----->4.Reload the locale settings:
+sudo dpkg-reconfigure locales
+----->5.Verify the locale:
+locale
+______________________________________________________________________________________________________________________
+nano nginx.yml
+
+---
+- name: Install Nginx
+  hosts: sudo123
+  remote_user: root
+  become: true
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+    - name: start Nginx
+      service:
+        name: nginx
+        state: started
+______________________________________________________________________________________________________________________
+nano apache2.yml
+__________
+---
+- name: Install apache2
+  hosts: ansible_client
+  remote_user: root
+  become: true
+
+  tasks:
+    - name: install apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: start apache2
+      service:
+        name: apache2
+        state: started
+
+    - name: create content
+      copy:
+        content: "Congrats on installing ansible"
+        dest: /var/www/html/index.html
+_________
+
+ansible-playbook apache2.yml --syntax-check
+ansible-playbook apache2.yml
+______________________________________________________________________________________________________________________
+nano tomcat.yml
+---
+- name: Install Apache Tomcat
+  hosts: sudo123
+  become: yes
+  vars:
+    tomcat_version: "10"  # Change this to the desired Tomcat version
+  tasks:
+    - name: Create user 'jaibala'
+      user:
+        name: jaibala
+        password: "{{ 'jaibala' | password_hash('sha512') }}"  # Replace 'password' with the >
+        groups: sudo  # Add the user to the sudo group
+        shell: /bin/bash  # Specify the user's shell
+
+    - name: Create directory '/opt/TOMCAT'
+      file:
+        path: /opt/TOMCAT
+        state: directory
+        owner: jaibala
+        group: jaibala
+        mode: "0755"
+
+    - name: Download Apache Tomcat
+      get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-10.1.19.ta>
+        dest: /opt/apache-tomcat-10.1.19.tar.gz
+
+    - name: Extract Apache Tomcat
+      ansible.builtin.unarchive:
+        src: /opt/apache-tomcat-10.1.19.tar.gz
+        dest: /opt/TOMCAT/
+        remote_src: yes
+
+    - name: Set permissions for Tomcat directory
+      file:
+        path: "/opt/TOMCAT/apache-tomcat-10.1.19/"
+        state: directory
+        owner: "root"
+        group: "root"
+        mode: "0755"
+        recurse: yes
+
+    - name: Start Apache Tomcat
+      command: "/opt/TOMCAT/apache-tomcat-10.1.19/bin/startup.sh"
+______________________________________________________________________________________________________________________
+nano Adduser.yml
+
+---
+- name: Create a new user
+  hosts: your_target_host
+  become: yes  # This allows the task to run with sudo privileges
+  
+  tasks:
+    - name: Create user 'john'
+      user:
+        name: john
+        password: "{{ 'password' | password_hash('sha512') }}"  # Replace 'password' with the actual password
+        groups: sudo  # Add the user to the sudo group
+        shell: /bin/bash  # Specify the user's shell
+______________________________________________________________________________________________________________________
+nano makedirector.yml
+_________
+---
+- name: Create a directory
+  hosts: your_target_host
+  become: yes  # This allows the task to run with sudo privileges
+  
+  tasks:
+    - name: Create directory '/tmp/example_dir'
+      file:
+        path: /tmp/example_dir
+        state: directory
+        mode: '0755'
+______________________________________________________________________________________________________________________
+
+
+
+	

@@ -1,0 +1,46 @@
+---
+- name: Install MySQL on Ubuntu
+  hosts: admin1
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: no
+
+    - name: Copy file from local to remote
+      ansible.builtin.copy:
+        src: /home/ubuntu/Downloads/mysql-apt-config_0.8.17-1_all.deb
+        dest: /home/admin1/Downloads/mysql-apt-config_0.8.17-1_all.deb
+
+    - name: Install the package
+      ansible.builtin.command:
+        cmd: dpkg -i /home/admin1/Downloads/mysql-apt-config_0.8.17-1_all.deb
+      # Optionally, specify the become directive to run the command as root
+      become: yes
+
+    # Optional: Secure MySQL installation (prompts for root password)
+#    - name: Secure MySQL installation
+#      expect:
+#        command: mysql_secure_installation
+#        responses:
+#          'Enter password for user root:': '{{ mysql_root_password }}'
+#          'Would you like to setup VALIDATE PASSWORD plugin?': 'no'
+#          'Change the root password?': 'no'
+#          'Remove anonymous users?': 'yes'
+#          'Disallow root login remotely?': 'yes'
+#          'Remove test database and access to it?': 'yes'
+#          'Reload privilege tables now?': 'yes'
+#      when: mysql_secure_installation | default(true)
+
+
+ # Add tasks to configure MySQL (e.g., initialize data directory, set up configuration files, start service, etc.)
+#    - name: Install MySQL server
+#      apt:
+#        name: mysql-server
+#        state: present
+
+#   - name: Copy MySQL installation package
+#      copy:
+#        src: /home/uadmin/pakage/mysql-package.tar.gz
+#        dest: /tmp/mysql-package.tar.gz

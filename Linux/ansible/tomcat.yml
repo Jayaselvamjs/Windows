@@ -1,0 +1,44 @@
+---
+- name: Install Apache Tomcat
+  hosts: uadmin
+  become: yes
+  vars:
+    tomcat_version: "10"  # Change this to the desired Tomcat version
+  tasks:
+    - name: Create user 'jaibala'
+      user:
+        name: jaibala
+        password: "{{ 'jaibala' | password_hash('sha512') }}"  # Replace 'password' with the actual password
+        groups: sudo  # Add the user to the sudo group
+        shell: /bin/bash  # Specify the user's shell
+
+    - name: Create directory '/opt/TOMCAT'
+      file:
+        path: /opt/TOMCAT
+        state: directory
+        owner: jaibala
+        group: jaibala
+        mode: "0755"
+
+    - name: Download Apache Tomcat
+      get_url:
+        url: "https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-10.1.19.tar.gz"
+        dest: /opt/apache-tomcat-10.1.19.tar.gz
+
+    - name: Extract Apache Tomcat
+      ansible.builtin.unarchive:
+        src: /opt/apache-tomcat-10.1.19.tar.gz
+        dest: /opt/TOMCAT/
+        remote_src: yes
+
+    - name: Set permissions for Tomcat directory
+      file:
+        path: "/opt/TOMCAT/apache-tomcat-10.1.19/"
+        state: directory
+        owner: "root"
+        group: "root"
+        mode: "0755"
+        recurse: yes
+
+    - name: Start Apache Tomcat
+      command: "/opt/TOMCAT/apache-tomcat-10.1.19/bin/startup.sh"

@@ -1,0 +1,22 @@
+---
+- name: Execute SQL commands on MSSQL database
+  hosts: ubuntu
+  tasks:
+    - name: Execute SQL query to create a database
+      mssql_db:
+        login_host: 10.0.49.74
+        login_user: root
+        login_password: mssql
+        name: vinodb
+        state: present  # This ensures the database is created if it doesn't exist
+      register: create_db_result
+
+    - name: Execute SQL query to create a table
+      mssql_db:
+        login_host: 10.0.49.74
+        login_user: root
+        login_password: mssql
+        name: vino
+        sql:
+          - "CREATE TABLE your_table (id INT, name VARCHAR(255))"
+      when: create_db_result is succeeded  # Only execute if the database creation was successful

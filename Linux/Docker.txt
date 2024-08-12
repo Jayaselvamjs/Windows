@@ -1,0 +1,140 @@
+https://www.middlewareinventory.com/blog/docker-tomcat-example-dockerfile-sample/
+--------------------------------------Step1: Creating Docker Tomcat Image - Example-----------------------------------
+
+mkdir /apps/docker/DockerTomcat
+nano Dockerfile
+_____________________________________________________________________________________________________
+FROM centos
+
+MAINTAINER hello@gritfy.com
+
+RUN mkdir /opt/tomcat/
+
+WORKDIR /opt/tomcat
+RUN curl -O https://www-eu.apache.org/dist/tomcat/tomcat-8/v8.5.40/bin/apache-tomcat-8.5.40.tar.gz
+RUN tar xvfz apache*.tar.gz
+RUN mv apache-tomcat-8.5.40/* /opt/tomcat/.
+RUN yum -y install java
+RUN java -version
+
+WORKDIR /opt/tomcat/webapps
+RUN curl -O -L https://github.com/AKSarav/SampleWebApp/raw/master/dist/SampleWebApp.war
+
+EXPOSE 8080
+
+CMD ["/opt/tomcat/bin/catalina.sh", "run"]
+_____________________________________________________________________________________________________
+
+FROM ubuntu:16.04
+
+# Install prerequisites
+RUN apt-get -y update &amp;&amp; apt-get -y upgrade
+RUN apt-get -y install openjdk-8-jdk wget
+RUN apt-get -y install curl
+RUN mkdir /usr/local/tomcat
+RUN wget https://downloads.apache.org/tomcat/tomcat-10/v10.0.20/bin/apache-tomcat-10.0.20.tar.gz -O /tmp/tomcat.tar.gz
+RUN cd /tmp &amp;&amp; tar xvfz tomcat.tar.gz
+RUN cp -Rv /tmp/apache-tomcat-10.0.20/* /usr/local/tomcat/
+
+EXPOSE 8080
+# java
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+
+# Define default command.
+CMD ["bash"]
+
+MAINTAINER bhaskarndas@gmail.com
+
+
+WORKDIR /usr/local/tomcat/webapps
+RUN curl -O -L https://github.com/bhaskarndas/sample-war/raw/main/sampletest.war
+
+
+CMD ["https://net.cloudinfrastructureservices.co.uk/usr/local/tomcat/bin/catalina.sh", "run"]
+_____________________________________________________________________________________________________
+
+----------------------------------------Step2: Build the Docker Tomcat Image------------------------------------------
+
+docker build -t [Name Of the Image]  .
+$ docker build -t tomcat .
+
+-----------------------------------Step3: Publish or Push the image to DockerHub--------------------------------------
+
+$ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: saravak
+Password:
+Login Succeeded
+
+$ docker push tomcat
+
+The push refers to repository [docker.io/tomcat]
+bfc9fd0939b7: Pushed
+f6b1f20ff3ed: Pushed
+6d21360e64a0: Pushed
+4a62c00a3c78: Pushed
+0bc97febfdbb: Pushed
+0f861fa8dd99: Pushed
+c1117571ffb4: Pushed
+071d8bd76517: Mounted from library/centos
+latest: digest: sha256:8ede588ad0bb944e62765fdb40b21f7ebdc6587afa00efc7570ede4c7f0786fa size: 1996
+
+------------------> Additional: How to download this Docker Tomcat Image?
+
+docker pull tomcat
+docker images
+docker image ls tomcat
+
+-----------------------------------Step4: Run Docker Tomcat image as a container--------------------------------------
+
+$ docker container run -it -d – name tomcatcontainer1 -p 8081:8080 saravak/tomcat8
+
+	-it: 				to enable Interactive Session/SSH to get into the container at a later point in time
+	-d: 				Run the container in the background (always recommended)
+	--name: 			name your container
+	saravak/tomcat8: 	the Image used to create this container. the Image instantiated as a container
+	-p 8081:8080:  		Forwarding the Container port 8080 to Host 8081
+
+---------------------------------Step5: Access the Deployed/Built-In SampleWebApp-------------------------------------
+
+http://localhost:8081/SampleWebApp
+
+----------------------------------------------Docker Commands Cheat Sheet----------------------------------------------
+# How to start and stop the container 
+
+docker stop <containername/id>  # to stop the container which is running in background mode
+docker container start <containername/id> # to start the already stopped container
+
+# monitoring the Container 
+
+docker container list # list the containers created
+docker container ls -a  #to list the containers including not running containers
+docker ps    #to list the running container
+docker info #docker engine status including container running/paused/stopped containers list
+docker container stats <containername/id> #prints the CPU and MEM usage data of the container name
+docker container stats #prints the CPU and MEM usage of all running containers
+docker container top <containername/id> #executes the top command in the container specified, fails if the specified container is not running
+
+# How to remove/delete the container
+
+docker container rm <containername/id> # Remove the Container 
+
+# How to remove/delete the image
+
+docker container rmi <imagename/imageid> # Remove the image
+# How to view the logs of the running container
+
+docker container logs <containername/id> # to view the logs of the container 
+
+
+---------------------------------------------------Docker Commands----------------------------------------------------
+
+Here is the list of important docker commands:
+docker ps – Lists all running containers
+docker ps all – Lists all docker containers, including stopped ones
+docker images – Lists all the docker images
+docker search [image-name] – searches for the images in the docker hub
+docker kill [containerid] – kills the container.
+docker stop [containerid] – pauses the container.
+docker restart [containerid] – Restarts the stopped container
+docker push [image name] – Pushes an image from an environment to the docker hub

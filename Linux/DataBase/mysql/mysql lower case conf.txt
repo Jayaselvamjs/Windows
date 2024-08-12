@@ -1,0 +1,37 @@
+sudo apt update 
+
+sudo apt install mysql-server
+
+#########Lower_Case_Table_Names#########
+# stop mysql service
+# 	
+Entry at last: lower_case_table_names=1
+cd /var/lib
+backup mysql folder
+rm -rf mysql
+mkdir mysql
+chmod -R 700 mysql
+chown -R mysql:mysql mysql
+
+mysqld --defaults-file=/etc/mysql/my.cnf --initialize --user=mysql --lower_case_table_names=1 --console
+
+#systemctl start mysql
+ 
+#start mysql service
+#########Lower_Case_Table_Names#########
+sudo grep 'temporary password' /var/log/mysql/error.log
+
+
+#########Grand User Permission#########
+mysql> CREATE USER 'root'@'%' IDENTIFIED BY 'PASSWORD'; 
+
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+
+exmple
+(CREATE USER 'root'@'%' IDENTIFIED BY 'Pr3c1s10n';)
+
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+mysql> FLUSH PRIVILEGES;
+#########Grand User Permission#########
+

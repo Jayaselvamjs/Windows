@@ -1,0 +1,21 @@
+---
+- name: Install apache2
+  hosts: sudo123
+  become: true
+
+  tasks:
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+
+    - name: start Apache2
+      service:
+        name: apache2
+        state: started
+
+    - name: create content
+      copy:
+        content: "Congrats on installing ansible"
+        dest: /var/www/html/index.html

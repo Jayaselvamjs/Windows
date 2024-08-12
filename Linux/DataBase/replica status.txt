@@ -1,0 +1,16 @@
+FLUSH PRIVILEGES;
+show master status;
+show slave status;
+start slave;
+ CHANGE MASTER TO MASTER_HOST = '10.0.49.93', 
+ MASTER_USER = 'repladmin', 
+ MASTER_PASSWORD = 'Pr3c1s10n', 
+ MASTER_LOG_FILE = 'Binary_log.000001', 
+ MASTER_LOG_POS = 57250;
+ 
+ stop slave;
+stop replica;
+reset replica;
+start replica;
+reset master;
+reset slave;

@@ -1,0 +1,19 @@
+---
+- name: Install Java
+  hosts: nagiosql
+  become: yes
+
+  tasks:
+    - name: Check OS distribution and install Java
+      block:
+        - name: Check OS distribution for Ubuntu
+          block:
+            - name: Ubuntu detected - Copying Java package
+              ansible.builtin.copy:
+                src: /home/ubuntu/script-ansible/nagiosql/roles/linux-nagiosql/files/docker-desktop-4.28.0-amd64.deb
+                dest: /opt/docker-desktop-4.28.0-amd64.deb
+              when: ansible_distribution == 'Ubuntu'
+
+            - name: Ubuntu detected - Installing Java from local deb package
+              ansible.builtin.shell: dpkg -i /opt/docker-desktop-4.28.0-amd64.deb
+              when: ansible_distribution == 'Ubuntu'
